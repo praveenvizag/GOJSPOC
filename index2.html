@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript" src="go-debug.js"></script>
+
+    <script>
+      function init() {
+        var click  = document.querySelector("button");
+        click.disabled=true;
+        var $ = go.GraphObject.make;
+        var diagram = $(go.Diagram, "myDiagramDiv",
+                {
+                  layout: $(go.TreeLayout,
+                            { angle: 0, nodeSpacing: 60, layerSpacing: 60 }
+                            ),
+                            "InitialLayoutCompleted": function(e) {
+      // if not all Nodes have real locations, force a layout to happen
+      if (!e.diagram.nodes.all(function(n) { return n.location.isReal(); })) {
+        e.diagram.layoutDiagram(true);
+      }
+    }
+                });
+       // diagram.layout = new go.TreeLayout;
+        diagram.isReadOnly = true;
+       
+        diagram.nodeTemplate = $(go.Node,
+          "Table", nodeStyle(),
+          { layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized },
+          $(go.Panel,"Auto",
+          $(go.Shape,"Rectangle",
+            {width: "auto" },
+            new go.Binding("fill", "isActive",function(c) {
+              return c ? "lightGreen": "lightBlue";
+            })
+          ),
+          $(go.TextBlock, 
+          {verticalAlignment:go.Spot.Center,width:100, height: 40, margin: 10,isMultiline: true ,textAlign: "center",name :"TEXT" }, 
+          new go.Binding("text", "key")),
+          ),
+          {mouseEnter : showMouserOverEvent},
+          {mouseLeave :  showMouseLeaveEvent},
+          makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
+          makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
+          
+        );
+
+        diagram.linkTemplate = $(go.Link,
+          {routing: go.Link.AvoidsNodes},
+          // new go.Binding("fromSpot" ,"startNode"),
+          // new go.Binding("toSpot" ,"endNode"),
+          $(go.Shape, { strokeWidth: 2, stroke: "gray" }),
+          $(go.Shape, { toArrow: "Standard", fill: "gray", stroke: null })
+        );
+        var nodeDataArray = [
+          { key: "Start", isActive:true,toolTipMessage:"Node1"},
+          { key: "Enter the Budget Details",isActive:false,toolTipMessage:"Node2"},
+          { key: "Manager Approval",isActive:false,toolTipMessage:"Node2" },
+          { key: "End",isActive:false,toolTipMessage:"Node2" }
+          
+        ];
+        var linkDataArray = [
+      
+          { from: "Start", to: "Enter the Budget Details",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Start", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Enter the Budget Details", to: "Manager Approval",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Manager Approval", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left}
+         
+          
+        ];
+        function makePort(name, align, spot, output, input) {
+        var horizontal = align.equals(go.Spot.Top) || align.equals(go.Spot.Bottom);
+       
+        return $(go.Shape,
+          {
+            fill: "transparent",  // changed to a color in the mouseEnter event handler
+            strokeWidth: 0,  // no stroke
+            width: horizontal ? NaN : 8,  // if not stretching horizontally, just 8 wide
+            height: !horizontal ? NaN : 8,  // if not stretching vertically, just 8 tall
+            alignment: align,  // align the port on the main Shape
+            stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
+            portId: name,  // declare this object to be a "port"
+            fromSpot: spot,  // declare where links may connect at this port
+            fromLinkable: output,  // declare whether the user may draw links from here
+            toSpot: spot,  // declare where links may connect at this port
+            toLinkable: input,  // declare whether the user may draw links to here
+            cursor: "pointer",  // show a different cursor to indicate potential link point
+            mouseEnter: function(e, port) {  // the PORT argument will be this Shape
+              if (!e.diagram.isReadOnly) port.fill = "rgba(255,0,255,0.5)";
+            },
+            mouseLeave: function(e, port) {
+              port.fill = "transparent";
+            }
+          });
+      }
+      
+        diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+        diagram.undoManager.isEnabled = true;
+        diagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
+        diagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
+      }
+      function showMouserOverEvent(event, obj) {
+        console.dir(event);
+        console.dir(obj);
+        console.dir(obj.data);
+        var msg = obj.findObject("TEXT");
+        msg.text = obj.data['toolTipMessage'];
+      }
+      function showMouseLeaveEvent(event,obj) {
+        console.dir(obj.data);
+        var msg = obj.findObject("TEXT");
+         msg.text = obj.data['key'];
+      }
+      function toolTipMessage(e,obj) {
+        
+        new go.Binding("text" , "key");
+
+      }
+      function nodeStyle() {
+        return [
+          // new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+          {
+            locationSpot: go.Spot.Center
+          }
+        ];
+      }
+    </script>
+  </head>
+
+  <body>
+   
+    <div
+      id="myDiagramDiv"
+      style="border: solid 1px blue ; width: auto;height: 550px;background-color: white;" 
+    ></div>
+    <div>
+      <button id = "clickMe" style="margin-bottom :10px " onclick="init()">Process Definition</button>
+    </div>
+  </body>
+</html>

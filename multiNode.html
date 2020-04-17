@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript" src="go-debug.js"></script>
+
+    <script>
+      function init() {
+        var click  = document.querySelector("button");
+        click.disabled=true;
+        var $ = go.GraphObject.make;
+        var diagram = new go.Diagram("myDiagramDiv2");
+        diagram.isReadOnly = false;
+        var graygrad = $(go.Brush, "Linear", { 0: "#F5F5F5", 1: "#F1F1F1" });
+      var bluegrad = $(go.Brush, "Linear", { 0: "#CDDAF0", 1: "#91ADDD" });
+      var yellowgrad = $(go.Brush, "Linear", { 0: "#FEC901", 1: "#FEA200" });
+      var lavgrad = $(go.Brush, "Linear", { 0: "#EF9EFA", 1: "#A570AD" });
+        var itemTempl =
+        $(go.Panel, "Horizontal",
+          $(go.Shape,
+            { desiredSize: new go.Size(400, 15), strokeJoin: "round", strokeWidth: 3, stroke: null, margin: 2 },
+            ),
+          $(go.TextBlock,
+            {
+              stroke: "#333333",
+              font: "bold 14px sans-serif"
+            },
+            new go.Binding("text", "name"))
+        );
+        diagram.nodeTemplate = $(
+          go.Node,
+          "Auto", 
+          {
+            selectionAdorned: true,
+            resizable: true,
+            layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
+            fromSpot: go.Spot.AllSides,
+            toSpot: go.Spot.AllSides,
+            isShadowed: true,
+            shadowOffset: new go.Point(3, 3),
+            shadowColor: "#C5C1AA"
+          },
+         // new go.Binding("location", "loc", go.Point.parse),
+          $(go.Shape,
+            "Rectangle",
+            {fill: "Blue", width: "100px" },
+            new go.Binding("fill", "isActive",function(c) {
+              return c ? "lightGreen": "blue";
+            })
+          ),
+          $(go.TextBlock, 
+          {verticalAlignment:go.Spot.Center,width:100, height: 40, margin: 10,isMultiline: true ,textAlign: "center",name :"TEXT" }, 
+          new go.Binding("text", "key")),
+          $(go.Panel, "Vertical",
+              {
+                name: "LIST",
+                row: 1,
+                padding: 3,
+                alignment: go.Spot.TopLeft,
+                defaultAlignment: go.Spot.Left,
+                stretch: go.GraphObject.Horizontal,
+                itemTemplate: itemTempl
+              })
+          
+        );
+        var nodeDataArray = [
+          { key: "Start", isActive:true,loc: "0 0",toolTipMessage:"Node1"},
+          { key: "Enter the Budget Details",isActive:false,loc: "200 0" ,toolTipMessage:"Node2"},
+          { key: "Manager Approval",isActive:false,loc: "400 0",toolTipMessage:"Node2" },
+          { key: "End", isActive:false,loc: "600 -250",toolTipMessage:"Node2" },
+          { key: "Working Node", isActive:true,loc: "800 0",toolTipMessage:"Node1"},
+          { key: "Owner Accepance", isActive:true,loc: "1000 0",toolTipMessage:"Node1"},
+          { key: "Order Process", isActive:true,loc: "1000 300",toolTipMessage:"Node1"},
+          { key: "Order Review", isActive:true,loc: "1000 500",toolTipMessage:"Node1"},
+          { key: "Owner AcceApproval OF Deliverable", isActive:true,loc: "1000 150",toolTipMessage:"Node1"},
+          { key: "PCB Review", isActive:true,loc: "1000 700",toolTipMessage:"Node1"},
+         
+        ];
+        var linkDataArray = [
+          { from: "Start", to: "Enter the Budget Details",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Start", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Enter the Budget Details", to: "Manager Approval",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Manager Approval", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Start", to: "Working Node",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Working Node", to: "Owner Accepance",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Owner Accepance", to: "Order Review",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Order Review", to: "Order Process",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Order Review", to: "Owner AcceApproval OF Deliverable",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Order Review", to: "PCB Review",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          
+          
+          
+         
+        ];
+        diagram.linkTemplate = $(
+          go.Link,
+         // {routing: go.Link.AvoidsNodes,fromSpot: go.Spot.Right, toSpot: go.Spot.Left},
+          {routing: go.Link.AvoidsNodes},
+          new go.Binding("fromSpot" ,"startNode"),
+          new go.Binding("toSpot" ,"endNode"),
+         
+          // The first shape in a link is special, its geometry is set by the Link's routing,
+          // so it does not need a geometry or figure set manually
+          $(go.Shape, { strokeWidth: 2, stroke: "gray" }),
+          $(go.Shape, { toArrow: "Standard", fill: "gray", stroke: null })
+        );
+        diagram.model =  new go.TreeModel([
+        { key: "Root", color: lavgrad },
+        { key: "Left1", parent: "Root", dir: "left", color: bluegrad },
+        { key: "leaf1", parent: "Left1" },
+        { key: "leaf2", parent: "Left1" },
+        { key: "Left2", parent: "Left1", color: bluegrad },
+        { key: "leaf3", parent: "Left2" },
+        { key: "leaf4", parent: "Left2" },
+        { key: "leaf5", parent: "Left1" },
+        { key: "Right1", parent: "Root", dir: "right", color: yellowgrad },
+        { key: "Right2", parent: "Right1", color: yellowgrad },
+        { key: "leaf11", parent: "Right2" },
+        { key: "leaf12", parent: "Right2" },
+        { key: "leaf13", parent: "Right2" },
+        { key: "leaf14", parent: "Right1" },
+        { key: "leaf15", parent: "Right1" },
+        { key: "Right3", parent: "Root", dir: "right", color: yellowgrad },
+        { key: "leaf16", parent: "Right3" },
+        { key: "leaf17", parent: "Right3" }
+      ]);
+        diagram.undoManager.isEnabled = true;
+      }
+      function showMouserOverEvent(obj) {
+        var msg = obj.findObject("TEXT");
+        msg.text = "toolTipMessage";
+      }
+      function showMouserLeaveEvent(obj) {
+        var msg = obj.findObject("TEXT");
+       msg.text = new go.Binding("text","key");
+      }
+      function toolTipMessage(e,obj) {
+        
+        new go.Binding("text" , "key");
+
+      }
+      // when the user clicks on the background of the Diagram, remove all highlighting
+    </script>
+  </head>
+
+  <body>
+    <!--<div id ="myDiagramDiv" style="border: solid 1px blue ; width: 400px;height: 150px;margin-bottom: 10px;">
+    </div>-->
+    <div
+      id="myDiagramDiv2"
+      style="border: solid 1px blue ; width: auto;height: 550px;background-color: lightblue;" 
+    ></div>
+    <div>
+      <button id = "clickMe" style="margin-bottom :10px " onclick="init()">Process Definition</button>
+    </div>
+  </body>
+</html>
