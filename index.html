@@ -13,7 +13,7 @@
         var diagram = $(go.Diagram, "myDiagramDiv",
                 {
                   layout: $(go.TreeLayout,
-                            { angle: 90, nodeSpacing: 60, layerSpacing: 60 }
+                            { angle: 0, nodeSpacing: 30, layerSpacing: 30 }
                             ),
                             "InitialLayoutCompleted": function(e) {
       // if not all Nodes have real locations, force a layout to happen
@@ -82,66 +82,46 @@
         // the Shape.fill color depends on whether Link.isHighlighted is true
         new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "black"; })
             .ofObject())
+          
         );
         var nodeDataArray = [
-          { key: "Start", isActive:true,loc: "0 0",toolTipMessage:"Node1"},
-          { key: "Enter the Budget Details",isActive:false,loc: "200 0" ,toolTipMessage:"Node2"},
-          { key: "Manager Approval",isActive:false,loc: "400 0",toolTipMessage:"Node2" },
-          { key: "Working Node", isActive:true,loc: "800 0",toolTipMessage:"Node1"},
-          { key: "Owner Accepance", isActive:true,loc: "1000 0",toolTipMessage:"Node1"},
-          { key: "Order Process", isActive:true,loc: "1100 300",toolTipMessage:"Node1"},
-          { key: "Order Review", isActive:false,loc: "1200 500",toolTipMessage:"Node1"},
-          { key: "Owner AcceApproval OF Deliverable", isActive:true,loc: "1000 150",toolTipMessage:"Node1"},
-          { key: "PCB Review", isActive:false,loc: "1400 700",toolTipMessage:"Node1"},
-          { key: "End", isActive:false,loc: "600 -250",toolTipMessage:"Node2" },
-          { key: "Nofification to Submit new HRF", isActive:false,loc: "600 -250",toolTipMessage:"Nofift User" },
-          { key: "Head SUplier Reviews", isActive:false,loc: "800 -250",toolTipMessage:"Supplier Review User bkuho jihoi piuh huig oju iu" },
-          { key: "Open Task Reaminder", isActive:true,loc: "100 -250",toolTipMessage:"Supplier Review User bkuho jihoi piuh huig oju iu" }
+          { key: "Start", isActive:true,toolTipMessage:"Node1"},
+          { key: "Enter the Budget Details",isActive:false,toolTipMessage:"Node2"},
+          { key: "Reiew the Budget Details",isActive:false,toolTipMessage:"Node2"},
+          { key: "Manager Approval",isActive:false,toolTipMessage:"Node2" },
+          { key: "Working Node", isActive:true,toolTipMessage:"Node1"},
+          { key: "Owner Accepance", isActive:true,toolTipMessage:"Node1"},
+          { key: "Order Process", isActive:true,toolTipMessage:"Node1"},
+          { key: "Order Review", isActive:false,toolTipMessage:"Node1"},
+          { key: "Owner AcceApproval OF Deliverable", isActive:true,toolTipMessage:"Node1"},
+          { key: "PCB Review", isActive:false,toolTipMessage:"Node1"},
+          { key: "End", isActive:false,toolTipMessage:"Node2" },
+          { key: "Nofification to Submit new HRF", isActive:false,toolTipMessage:"Nofift User" },
+          { key: "Head SUplier Reviews", isActive:false,toolTipMessage:"Supplier Review User bkuho jihoi piuh huig oju iu" },
+          { key: "Open Task Reaminder", isActive:true,toolTipMessage:"Supplier Review User bkuho jihoi piuh huig oju iu" }
          
         ];
         var linkDataArray = [
           {"linkFromPortIdProperty": "fromPort",
           "linkToPortIdProperty": "toPort"},
-          { from: "Start", to: "Enter the Budget Details",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T"},
-          { from: "Start", to: "Open Task Reaminder",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T"},
-          { from: "Start", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T"},
-          { from: "Enter the Budget Details", to: "Manager Approval",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Manager Approval", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Start", to: "Working Node",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Working Node", to: "Owner Accepance",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Owner Accepance", to: "Order Review",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Order Review", to: "Order Process",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Start", to: "Order Process",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Order Review", to: "Owner AcceApproval OF Deliverable",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Order Review", to: "PCB Review",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" },
-          { from: "Owner AcceApproval OF Deliverable", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left,"fromPort":"B", "toPort":"T" }
+          { from: "Start", to: "Enter the Budget Details",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Start", to: "Open Task Reaminder",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Start", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left},
+          { from: "Enter the Budget Details", to: "Manager Approval",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Enter the Budget Details", to: "Reiew the Budget Details",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Manager Approval", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Start", to: "Working Node",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Working Node", to: "Owner Accepance",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Owner Accepance", to: "Order Review",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Order Review", to: "Order Process",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Start", to: "Order Process",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Order Review", to: "Owner AcceApproval OF Deliverable",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Order Review", to: "PCB Review",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Owner AcceApproval OF Deliverable", to: "End",startNode:go.Spot.Right ,endNode:go.Spot.Left },
+          { from: "Owner AcceApproval OF Deliverable", to: "Owner AcceApproval OF Deliverable",startNode:go.Spot.Right ,endNode:go.Spot.Left,category:"SELF" }
           
         ];
-        function makePort(name, align, spot, output, input) {
-        var horizontal = align.equals(go.Spot.Top) || align.equals(go.Spot.Bottom);
-       
-        return $(go.Shape,
-          {
-            fill: "transparent",  // changed to a color in the mouseEnter event handler
-            strokeWidth: 0,  // no stroke
-            width: horizontal ? NaN : 8,  // if not stretching horizontally, just 8 wide
-            height: !horizontal ? NaN : 8,  // if not stretching vertically, just 8 tall
-            alignment: align,  // align the port on the main Shape
-            stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
-            portId: name,  // declare this object to be a "port"
-            fromSpot: spot,  // declare where links may connect at this port
-            fromLinkable: output,  // declare whether the user may draw links from here
-            toSpot: spot,  // declare where links may connect at this port
-            toLinkable: input,  // declare whether the user may draw links to here
-            cursor: "pointer",  // show a different cursor to indicate potential link point
-            mouseEnter: function(e, port) {  // the PORT argument will be this Shape
-              if (!e.diagram.isReadOnly) port.fill = "rgba(255,0,255,0.5)";
-            },
-            mouseLeave: function(e, port) {
-              port.fill = "transparent";
-            }
-          });
-      }
+        
       diagram.click = function(e) {
       e.diagram.commit(function(d) { d.clearHighlighteds(); }, "no highlighteds");
      };
@@ -170,6 +150,13 @@
             locationSpot: go.Spot.Center
           }
         ];
+      }
+
+      function getLinkShape(e,obj) {
+        //var data = obj.findObject("SELF");
+     //return   $(go.Shape, { strokeWidth: 1, stroke: "black" });
+        console.log('obj' , obj);
+        //console.log('data' , data);
       }
     </script>
   </head>
